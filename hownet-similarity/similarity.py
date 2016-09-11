@@ -5,6 +5,19 @@ Created on 2016年9月7日
 @author: liuyu
 ''' 
 
+def generateSourcefile(glossaryfile, xiepeiyidic):
+    result_ = []
+    with open(glossaryfile, 'rt', encoding='utf-8') as greader, open(xiepeiyidic, 'rt', encoding='utf-8') as xreader:
+        glines = greader.readlines()
+        xlines = xreader.readlines()
+        for gl in glines:
+            gl = gl.split()
+            pos = gl[1]
+            gl = gl[0]
+            if pos == 'V':
+                for xl in xlines:
+                    result_.append(gl+'\t'+xl)
+    return result_
 
 def empty(line):
     if isinstance(line,str):
@@ -489,11 +502,15 @@ class WordSimilarity:
         
 if __name__ == '__main__':
     
-    
-    
+    generatePlabel = True
     SIMILARITY = True
     
-    
+    if generatePlabel:
+        glossaryfile = './hownet/glossary.dat'
+        xiepeiyidic = './result/bt_xiepeiyiVerb.dic'
+        lines = generateSourcefile(glossaryfile, xiepeiyidic)
+        print('There are '+str(len(lines))+' lines!!')
+        
     if SIMILARITY:
         BETA = [0.5,0.2,0.17,0.13]
         GAMA = 0.2
@@ -501,14 +518,27 @@ if __name__ == '__main__':
         ALFA = 1.6
         
         sememefile = './hownet/WHOLE.DAT'
-        glossaryfile = './hownet/glossary.dat'
+        #glossaryfile = './hownet/glossary.dat'
     
         obj = WordSimilarity()
         
         if obj.init(sememefile,glossaryfile) == False:
             print("[ERROR] init failed!!")
-    
-        word1 = '样式'
-        word2 = '颜色'    
-        sim = obj.calc(word1, word2, BETA, GAMA, DELTA, ALFA)
-        print('[sim] %s - %s : %f\n', word1, word2, sim)
+            
+        resultFile = './result/result.txt'
+        resultdic = {}
+        with open(resultFile, 'wt', encoding='utf-8') as writer:
+            for line in lines:
+                l = line.split()
+                word1 = l[0]
+                word2 = l[1]
+                sim = obj.calc(word1, word2, BETA, GAMA, DELTA, ALFA)
+                resultdic[line]=sim
+                #writer.write(line+'\t'+str(sim))
+                print('[sim] %s - %s : %f\n'%(word1, word2, sim))
+            #sorted by similarity
+            resultdic = sorted(resultdic.items(), key=lambda d:d[1], reverse = True)
+            
+            #write file
+            for key,value in resultdic:
+                writer.write(key+'\t'+str(value))
