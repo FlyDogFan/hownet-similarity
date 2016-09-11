@@ -555,4 +555,3 @@ if __name__ == '__main__':
                 #writer.write(line+'\t'+str(sim))
                 if sim!=-2.0:
                     print('[sim] %s - %s : %f\n'%(word1, word2, sim))
-                   
