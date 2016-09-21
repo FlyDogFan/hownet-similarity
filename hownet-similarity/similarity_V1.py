@@ -504,7 +504,11 @@ class WordSimilarity:
         
         
 if __name__ == '__main__':
-    
+    '''
+    bt_xiepeiyiVerb.dic：每一行是一个协陪义动词
+    #对于每一个协陪义动词，生成一个result序号.txt文件，存放“当前协陪义动词--glossary.dat中动词    相似度”
+    bt_xiepeiyiVerb.dic中有多少行，生成多少个result序号.txt文件
+    '''
     generatePlabel = True
     SIMILARITY = True
     
